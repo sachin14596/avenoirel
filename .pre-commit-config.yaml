@@ -1,0 +1,13 @@
+repos:
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 3.2.5
+    hooks:
+      - id: sqlfluff-lint
+        args: [--dialect, snowflake]
+      - id: sqlfluff-fix
+
+  - repo: https://github.com/dbt-checkpoint/dbt-checkpoint
+    rev: v2.0.10
+    hooks:
+      - id: dbt-parse
+      - id: check-model-has-description
