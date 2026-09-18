@@ -22,3 +22,8 @@ chroma_db/
 # OS files
 .DS_Store
 Thumbs.db
+
+# dbt profiles
+dags/dbt/profiles.yml
+
+dags/dbt/.user.yml
