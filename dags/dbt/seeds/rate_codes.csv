@@ -1,0 +1,56 @@
+rate_code,rate_channel,rate_flexibility,includes_breakfast,rate_category,description
+RA1,DIRECT,FLEXIBLE,false,STANDARD,Flexible Rate - Direct booking
+RA2,DIRECT,SEMI_FLEX,false,STANDARD,Semi-flexible Rate - Direct booking
+RA3,DIRECT,SAVER,false,STANDARD,Saver Rate - Direct booking non-refundable
+RA4,DIRECT,ADVANCE_SAVER,false,STANDARD,Advance Saver - Direct booking 21+ days ahead
+RB1,DIRECT,FLEXIBLE,true,STANDARD,Flexible Rate with Breakfast - Direct booking
+RB2,DIRECT,SEMI_FLEX,true,STANDARD,Semi-flexible Rate with Breakfast - Direct
+RB3,DIRECT,SAVER,true,STANDARD,Saver Rate with Breakfast - Direct non-refundable
+RB4,DIRECT,ADVANCE_SAVER,true,STANDARD,Advance Saver with Breakfast - Direct 21+ days
+FLRA1,OTA_PRIMARY,FLEXIBLE,false,OTA,Flexible Rate - Booking.com channel
+FLRA2,OTA_PRIMARY,SEMI_FLEX,false,OTA,Semi-flex Rate - Booking.com channel
+FLRA3,OTA_PRIMARY,SAVER,false,OTA,Saver Rate - Booking.com channel
+FLRA4,OTA_PRIMARY,ADVANCE_SAVER,false,OTA,Advance Saver - Booking.com channel
+FLRB1,OTA_PRIMARY,FLEXIBLE,true,OTA,Flexible Rate with Breakfast - Booking.com
+FLRB2,OTA_PRIMARY,SEMI_FLEX,true,OTA,Semi-flex Rate with Breakfast - Booking.com
+FLRB3,OTA_PRIMARY,SAVER,true,OTA,Saver Rate with Breakfast - Booking.com
+FLRB4,OTA_PRIMARY,ADVANCE_SAVER,true,OTA,Advance Saver with Breakfast - Booking.com
+FLMRA1,OTA_SECONDARY,FLEXIBLE,false,OTA,Flexible Rate - Expedia channel
+FLMRA2,OTA_SECONDARY,SEMI_FLEX,false,OTA,Semi-flex Rate - Expedia channel
+FLMRA3,OTA_SECONDARY,SAVER,false,OTA,Saver Rate - Expedia channel
+FLMRA4,OTA_SECONDARY,ADVANCE_SAVER,false,OTA,Advance Saver - Expedia channel
+FLMRB1,OTA_SECONDARY,FLEXIBLE,true,OTA,Flexible Rate with Breakfast - Expedia
+FLMRB2,OTA_SECONDARY,SEMI_FLEX,true,OTA,Semi-flex Rate with Breakfast - Expedia
+FLMRB3,OTA_SECONDARY,SAVER,true,OTA,Saver Rate with Breakfast - Expedia
+FLMRB4,OTA_SECONDARY,ADVANCE_SAVER,true,OTA,Advance Saver with Breakfast - Expedia
+ARA1,AVENIR_MEMBER,FLEXIBLE,false,LOYALTY,Flexible Rate - AVENIR member direct
+ARA3,AVENIR_MEMBER,SAVER,false,LOYALTY,Saver Rate - AVENIR member direct
+ARA4,AVENIR_MEMBER,ADVANCE_SAVER,false,LOYALTY,Advance Saver - AVENIR member direct
+ARB1,AVENIR_MEMBER,FLEXIBLE,true,LOYALTY,Flexible Rate with Breakfast - AVENIR member
+ARB3,AVENIR_MEMBER,SAVER,true,LOYALTY,Saver Rate with Breakfast - AVENIR member
+ARB4,AVENIR_MEMBER,ADVANCE_SAVER,true,LOYALTY,Advance Saver with Breakfast - AVENIR member
+MOBRO,MOBILE_APP,STANDARD,false,MOBILE,App Offer Room Only - Direct mobile
+MOBBB,MOBILE_APP,STANDARD,true,MOBILE,App Offer Bed and Breakfast - Direct mobile
+AMOBRO,MOBILE_APP,STANDARD,false,MOBILE,ALL Plus App Offer Room Only
+AMOBBB,MOBILE_APP,STANDARD,true,MOBILE,ALL Plus App Offer Bed and Breakfast
+S01,CORPORATE,FLEXIBLE,false,CORPORATE,Local Corporate Rate 1
+S02,CORPORATE,FLEXIBLE,false,CORPORATE,Local Corporate Rate 2
+S03,CORPORATE,FLEXIBLE,false,CORPORATE,Local Corporate Rate 3
+S04,CORPORATE,FLEXIBLE,false,CORPORATE,Local Corporate Rate 4
+GRP,GROUP,STANDARD,false,GROUP,Group Rate
+DG1,GROUP,STANDARD,false,GROUP,Direct Group Rate 1
+DG3,GROUP,ADVANCE_SAVER,false,GROUP,Direct Group Event Rate
+RAF,EVENT,NO_FLEX,false,EVENT,Event Rate No-Flex
+RAF2,EVENT,SEMI_FLEX,false,EVENT,Event Rate Semi-Flex
+RBF,EVENT,NO_FLEX,true,EVENT,Event Rate No-Flex with Breakfast
+RBF2,EVENT,SEMI_FLEX,true,EVENT,Event Rate Semi-Flex with Breakfast
+HOUSE,INTERNAL,STANDARD,false,INTERNAL,House Use - Staff rooms zero revenue
+FREE,INTERNAL,STANDARD,false,INTERNAL,Complimentary Rate - Zero revenue
+DAY,DAY_USE,STANDARD,false,DAY_USE,Day Use Rate - Not overnight stay
+ADV,DIRECT,ADVANCE_SAVER,false,PROMOTIONAL,Advance Saver Promotional
+HDEALS,DIRECT,STANDARD,false,PROMOTIONAL,Hot Deals - Flash sale last minute
+LONPRO,OTA_PRIMARY,STANDARD,false,PROMOTIONAL,OTA Promotion Rate
+VPRX3,DIRECT,STANDARD,false,PROMOTIONAL,Private Sale 3rd Night Free
+CUTOVER,SYSTEM,STANDARD,false,TEST_SYSTEM,System cutover migration artifact
+FIXME,SYSTEM,STANDARD,false,TEST_SYSTEM,Test or error record - filter out
+TSR,SYSTEM,STANDARD,false,TEST_SYSTEM,Test reservation - filter out

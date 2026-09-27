@@ -4,10 +4,19 @@ repos:
     hooks:
       - id: sqlfluff-lint
         args: [--dialect, snowflake]
+        additional_dependencies:
+          - sqlfluff-templater-dbt==3.2.5
+          - dbt-core==1.8.8
+          - dbt-snowflake==1.8.4
       - id: sqlfluff-fix
+        additional_dependencies:
+          - sqlfluff-templater-dbt==3.2.5
+          - dbt-core==1.8.8
+          - dbt-snowflake==1.8.4
 
   - repo: https://github.com/dbt-checkpoint/dbt-checkpoint
     rev: v2.0.10
     hooks:
       - id: dbt-parse
       - id: check-model-has-description
+        exclude: ^dags/dbt/macros/

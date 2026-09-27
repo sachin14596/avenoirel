@@ -1,0 +1,42 @@
+reason_code,reason_group,reason_description,is_system_record
+01,GUEST_INITIATED,Location not suitable,false
+02,GUEST_INITIATED,Better rate elsewhere,false
+04,GUEST_INITIATED,Personal reasons,false
+06,GUEST_INITIATED,Other - Client,false
+08,GUEST_INITIATED,Guest cancelled due to renovation,false
+16,NO_SHOW,No show,false
+20,HOTEL_INITIATED,Relocation,false
+21,HOTEL_INITIATED,Reservation without guarantee,false
+22,DUPLICATE,Wrong hotel booked,false
+23,GUEST_INITIATED,Act of God / Force majeure,false
+25,DUPLICATE,Double reservation,false
+26,SYSTEM,Test for TARS,true
+40,GROUP,Option date passed - Group,false
+41,GROUP,Event cancelled - Group,false
+44,GROUP,Option date and deposit limit passed - Group,false
+45,GROUP,More interesting offer elsewhere - Group,false
+46,SYSTEM,APOL System cancellation,true
+47,HOTEL_INITIATED,Partially not available,false
+48,GROUP,Delphi cancellation,false
+90,HOTEL_INITIATED,Default procedure payment,false
+91,HOTEL_INITIATED,Booking impossible,false
+07,HOTEL_INITIATED,Other - Hotel,false
+AIR,GUEST_INITIATED,Airline delays and flight cancellation,false
+PLN,GUEST_INITIATED,Plans have changed,false
+CXL,GUEST_INITIATED,Trip cancelled,false
+DUP,DUPLICATE,Duplicate reservation,false
+ILL,GUEST_INITIATED,Illness,false
+SDX,GUEST_INITIATED,Same day cancellation,false
+TSR,SYSTEM,Test reservation,true
+RML,GROUP,Rooming list and group block,false
+PTH,GUEST_INITIATED,Price too high,false
+WEA,GUEST_INITIATED,Weather,false
+TRP,GUEST_INITIATED,Transportation issues and delays,false
+WLK,HOTEL_INITIATED,Walked guest and relocation,false
+VM,GUEST_INITIATED,Vis Major,false
+ODS-CANC,SYSTEM,Annulation ODS,true
+PRICE,GUEST_INITIATED,Price,false
+REFI,GUEST_INITIATED,Loyalty programme related,false
+REGL,GUEST_INITIATED,Global cancellation,false
+REGP,GUEST_INITIATED,Grand public cancellation,false
+CLOSED,HOTEL_INITIATED,Hotel closed,false

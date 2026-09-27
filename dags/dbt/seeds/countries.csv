@@ -1,0 +1,9 @@
+country_code,country_name,currency_code,region,is_eu,gdpr_applies
+FR,France,EUR,Western Europe,true,true
+UK,United Kingdom,GBP,Western Europe,false,true
+DE,Germany,EUR,Western Europe,true,true
+ES,Spain,EUR,Southern Europe,true,true
+IT,Italy,EUR,Southern Europe,true,true
+NL,Netherlands,EUR,Western Europe,true,true
+BE,Belgium,EUR,Western Europe,true,true
+AE,United Arab Emirates,AED,Middle East,false,false

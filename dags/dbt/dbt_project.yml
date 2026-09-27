@@ -12,6 +12,11 @@ snapshot-paths: ["snapshots"]
 clean-targets:
   - "target"
   - "dbt_packages"
+  
+seeds:
+  avenoirel:
+    +schema: staging
+    +quote_columns: false
 
 vars:
   env: "{{ env_var('DBT_ENV', 'dev') }}"

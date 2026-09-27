@@ -1,0 +1,54 @@
+version: 2
+
+sources:
+  - name: avenoirel_raw
+    database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+    schema: raw
+    loaded_at_field: CREATED_AT
+    freshness:
+      warn_after: {count: 24, period: hour}
+      error_after: {count: 48, period: hour}
+    description: >
+      Raw source data loaded from Opera Cloud PMS simulation.
+      Represents the landing zone before any transformation.
+
+    tables:
+      - name: properties
+        description: Hotel property master data — 50 properties across 4 brands and 8 countries.
+        loaded_at_field: CREATED_AT
+
+      - name: room_types
+        description: Room type configurations per property — codes, capacities, accessibility flags.
+        loaded_at_field: CREATED_AT
+
+      - name: guests
+        description: Guest profiles from Opera — all booking guests regardless of loyalty status. Contains PII.
+        loaded_at_field: CREATED_AT
+
+      - name: avenir_members
+        description: AVENIR Rewards loyalty membership records — subset of guests enrolled in programme.
+        loaded_at_field: CREATED_AT
+
+      - name: reservations
+        description: Core reservation records from Opera — 60K bookings across 3 years including deliberate messiness.
+        loaded_at_field: BOOKING_DATE
+
+      - name: folios
+        description: Billing folio charges per reservation — room, F&B, and other charges in separate windows.
+        loaded_at_field: CHARGE_DATE
+
+      - name: cancellations
+        description: Cancellation records with Opera reason codes — covers guest, hotel, and no-show cancellations.
+        loaded_at_field: CANCELLATION_DATE
+
+      - name: room_availability
+        description: Daily room availability per property per room type — OOO rooms excluded from available count.
+        loaded_at_field: STAY_DATE
+
+      - name: avenir_points_transactions
+        description: Loyalty points earned per stay — status points and reward points tracked separately.
+        loaded_at_field: TRANSACTION_DATE
+
+      - name: avenir_tier_history
+        description: Tier change history for AVENIR members — upgrades, downgrades, and new member events.
+        loaded_at_field: EFFECTIVE_DATE
