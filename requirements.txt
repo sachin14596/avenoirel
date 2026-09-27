@@ -113,6 +113,7 @@ posthog==7.57.0
 pre-commit==3.8.0
 propcache==0.5.4
 protobuf==4.25.9
+pyarrow==25.0.1
 pycparser==3.0
 pydantic==2.13.5
 pydantic_core==2.46.5
