@@ -1072,3 +1072,73 @@ if __name__ == "__main__":
 
     print(f"\nClean data generation complete!")
     print(f"All files saved to: {CLEAN_DIR}\n")
+
+    # ── Messiness Injection ───────────────────────────────────────────────────
+    print("Injecting messiness into raw data...")
+
+    import shutil
+
+    # Start with copies of clean data
+    for csv_file in CLEAN_DIR.glob("*.csv"):
+        shutil.copy(csv_file, RAW_DIR / csv_file.name)
+
+    # Load raw copies for modification
+    raw_reservations = pd.read_csv(RAW_DIR / "reservations.csv")
+
+    # M6: Duplicate reservations — 0.5%
+    dup_count = int(len(raw_reservations) * config['messiness']['duplicate_reservation_pct'])
+    duplicates = raw_reservations.sample(n=dup_count, random_state=42).copy()
+    duplicates['confirmation_number'] = duplicates['confirmation_number'].apply(
+        lambda x: str(int(x) + 1)
+    )
+    duplicates['is_duplicate_reservation'] = True
+    raw_reservations = pd.concat([raw_reservations, duplicates], ignore_index=True)
+    print(f"  M6: Injected {dup_count} duplicate reservations")
+
+    # M7: Test/system records — 0.3%
+    test_codes = config['rate_codes']['test_system']
+    test_count = int(len(raw_reservations) * config['messiness']['test_record_pct'])
+    test_idx   = raw_reservations.sample(n=test_count, random_state=43).index
+    raw_reservations.loc[test_idx, 'rate_code']    = [
+        random.choice(test_codes) for _ in range(test_count)
+    ]
+    raw_reservations.loc[test_idx, 'is_test_record'] = True
+    print(f"  M7: Injected {test_count} test records")
+
+    # M8: Invalid date sequence — check_out before check_in — 0.2%
+    inv_count  = int(len(raw_reservations) * config['messiness']['invalid_date_sequence_pct'])
+    inv_idx    = raw_reservations.sample(n=inv_count, random_state=44).index
+    raw_reservations.loc[inv_idx, 'check_out_date'] = raw_reservations.loc[
+        inv_idx, 'check_in_date'
+    ].apply(lambda d: (pd.to_datetime(d) - timedelta(days=1)).strftime('%Y-%m-%d'))
+    raw_reservations.loc[inv_idx, 'has_invalid_date_sequence'] = True
+    print(f"  M8: Injected {inv_count} invalid date sequences")
+
+    # M10: Impossible occupancy — mark some OOO rooms as sold
+    raw_availability = pd.read_csv(RAW_DIR / "room_availability.csv")
+    occ_count  = int(len(raw_availability) * config['messiness']['impossible_occupancy_pct'])
+    occ_idx    = raw_availability.sample(n=occ_count, random_state=45).index
+    raw_availability.loc[occ_idx, 'ooo_rooms'] = raw_availability.loc[
+        occ_idx, 'total_rooms'
+    ] + random.randint(1, 5)
+    raw_availability.loc[occ_idx, 'rooms_available'] = -1
+    print(f"  M10: Injected {occ_count} impossible occupancy records")
+
+    # M11: Wrong duplicate cancelled — 0.1%
+    checked_out = raw_reservations[
+        raw_reservations['booking_status'] == 'CHECKED_OUT'
+    ].sample(
+        n=int(len(raw_reservations) * config['messiness']['wrong_cancel_pct']),
+        random_state=46
+    ).index
+    raw_reservations.loc[checked_out, 'booking_status'] = 'CANCELLED'
+    raw_reservations.loc[checked_out, 'is_duplicate_reservation'] = True
+    print(f"  M11: Injected {len(checked_out)} wrongly cancelled reservations")
+
+    # Save messy raw files
+    raw_reservations.to_csv(RAW_DIR / "reservations.csv", index=False)
+    raw_availability.to_csv(RAW_DIR / "room_availability.csv", index=False)
+
+    print(f"\n✅ Messiness injection complete!")
+    print(f"   Clean data: {CLEAN_DIR}")
+    print(f"   Raw data:   {RAW_DIR}\n")
