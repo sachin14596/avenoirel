@@ -1,0 +1,140 @@
+# AVENOIREL Data Generator Configuration
+# All scale parameters here — never hardcode in generate_data.py
+
+scale:
+  properties: 50
+  guests: 45000
+  reservations: 60000
+  data_start_date: "2022-01-01"
+  data_end_date: "2024-12-31"
+
+brands:
+  - code: LUX
+    name: "Lumiere Hotels"
+    tier: LUXURY
+    star_rating: 5
+    property_count: 5
+    avg_rooms: 150
+    room_types: [DLX-KNG, DLX-TWN, STE-JNR, STE-EXE, STE-GRD, PNT]
+  - code: PRE
+    name: "Prestige Hotels"
+    tier: PREMIUM
+    star_rating: 4
+    property_count: 15
+    avg_rooms: 180
+    room_types: [SUP, DLX, DLX-KNG, DLX-TWN, EXE, STE-JNR, DBCH]
+  - code: MID
+    name: "Midori Hotels"
+    tier: MIDSCALE
+    star_rating: 3
+    property_count: 20
+    avg_rooms: 140
+    room_types: [STD, SUP, DBL, TWI, FAM, DBCH]
+  - code: ECO
+    name: "EcoStay"
+    tier: ECONOMY
+    star_rating: 2
+    property_count: 10
+    avg_rooms: 120
+    room_types: [STD, DBL, TWI, DBCH, TWCH]
+
+countries:
+  - code: FR
+    name: France
+    currency: EUR
+    city_count: 8
+  - code: UK
+    name: United Kingdom
+    currency: GBP
+    city_count: 6
+  - code: DE
+    name: Germany
+    currency: EUR
+    city_count: 5
+  - code: ES
+    name: Spain
+    currency: EUR
+    city_count: 4
+  - code: IT
+    name: Italy
+    currency: EUR
+    city_count: 4
+  - code: NL
+    name: Netherlands
+    currency: EUR
+    city_count: 2
+  - code: BE
+    name: Belgium
+    currency: EUR
+    city_count: 2
+  - code: AE
+    name: UAE
+    currency: AED
+    city_count: 1
+
+rate_codes:
+  direct:
+    flexible: [RA1, RB1]
+    semi_flex: [RA2, RB2]
+    saver: [RA3, RB3]
+    advance_saver: [RA4, RB4]
+  ota_primary:
+    flexible: [FLRA1, FLRB1]
+    semi_flex: [FLRA2, FLRB2]
+    saver: [FLRA3, FLRB3]
+    advance_saver: [FLRA4, FLRB4]
+  ota_secondary:
+    flexible: [FLMRA1, FLMRB1]
+    semi_flex: [FLMRA2, FLMRB2]
+    saver: [FLMRA3, FLMRB3]
+    advance_saver: [FLMRA4, FLMRB4]
+  avenir_member:
+    flexible: [ARA1, ARB1]
+    saver: [ARA3, ARB3]
+    advance_saver: [ARA4, ARB4]
+  mobile_app: [MOBRO, MOBBB, AMOBRO, AMOBBB]
+  corporate: [S01, S02, S03, S04]
+  group: [GRP, DG1, DG3]
+  event: [RAF, RAF2, RBF, RBF2]
+  internal: [HOUSE, FREE]
+  day_use: [DAY]
+  promotional: [ADV, HDEALS, LONPRO, VPRX3]
+  test_system: [CUTOVER, FIXME, TSR]
+
+avenir_tiers:
+  - name: CLASSIC
+    min_nights: 0
+    max_nights: 9
+  - name: SILVER
+    min_nights: 10
+    max_nights: 29
+  - name: GOLD
+    min_nights: 30
+    max_nights: 59
+  - name: PLATINUM
+    min_nights: 60
+    max_nights: 99
+  - name: DIAMOND
+    min_nights: 100
+    max_nights: 9999
+
+messiness:
+  fake_names_pct: 0.01
+  garbled_names_pct: 0.02
+  dummy_email_pct: 0.08
+  missing_phone_pct: 0.15
+  missing_address_pct: 0.20
+  duplicate_reservation_pct: 0.005
+  test_record_pct: 0.003
+  invalid_date_sequence_pct: 0.002
+  early_points_pct: 0.015
+  impossible_occupancy_pct: 0.003
+  wrong_cancel_pct: 0.001
+
+cancellation_reasons:
+  guest_initiated: [PLN, CXL, ILL, PTH, WEA, TRP, AIR, "04", "02", "08", VM]
+  hotel_initiated: ["07", "20", WLK, CLOSED, "47", "91"]
+  no_show: ["16"]
+  duplicate: ["25", DUP, "22"]
+  group: ["40", "41", "44", "45", RML]
+  system: ["26", TSR, "46", ODS-CANC]
