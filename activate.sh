@@ -7,3 +7,8 @@ set -a && source .env && set +a
 
 echo "AVENOIREL environment activated"
 echo "Snowflake account: $SNOWFLAKE_ACCOUNT"
+
+
+#Command to activate
+# cd /d/Projects/avenoirel
+# source activate.sh
