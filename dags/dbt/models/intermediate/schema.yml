@@ -1,0 +1,74 @@
+version: 2
+
+models:
+  - name: int_revenue_by_property_daily
+    description: "Daily revenue, occupancy, and RevPAR metrics per property per room type. Joins room availability with reservations and folios. Foundation for all revenue KPI calculations in marts layer."
+    meta:
+      owner: sachin
+      domain: revenue
+    columns:
+      - name: property_code
+        description: "Property identifier. Foreign key to stg_hotel_properties."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_hotel_properties')
+              field: property_code
+      - name: room_type_id
+        description: "Room type identifier. Foreign key to stg_hotel_room_types."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_hotel_room_types')
+              field: room_type_id
+      - name: stay_date
+        description: "Calendar date for this availability and revenue record."
+        data_tests:
+          - not_null
+      - name: total_rooms
+        description: "Total physical rooms of this type in this property."
+        data_tests:
+          - not_null
+      - name: ooo_rooms
+        description: "Rooms out of order — not sellable on this date."
+        data_tests:
+          - not_null
+      - name: rooms_available
+        description: "Rooms available to sell — total_rooms minus ooo_rooms. RevPAR denominator."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+              severity: warn
+      - name: rooms_sold
+        description: "Rooms occupied on this date — CHECKED_IN, CHECKED_OUT, NO_SHOW statuses."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: room_revenue_eur
+        description: "Total room charge revenue in EUR for this date."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: avg_daily_rate_eur
+        description: "Average Daily Rate — room_revenue_eur divided by rooms_sold. Null when rooms_sold is zero."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+              where: "avg_daily_rate_eur is not null"
+      - name: occupancy_rate
+        description: "Occupancy rate — rooms_sold divided by rooms_available. Between 0 and 1."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0 and occupancy_rate <= 1"
+              where: "occupancy_rate is not null"
+              severity: warn
+      - name: revpar_eur
+        description: "Revenue Per Available Room — room_revenue_eur divided by rooms_available."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+              where: "revpar_eur is not null"
+              severity: warn
