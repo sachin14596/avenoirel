@@ -72,3 +72,173 @@ models:
               expression: ">= 0"
               where: "revpar_eur is not null"
               severity: warn
+
+  - name: int_booking_cancellation_signals
+    description: "Cancellation records enriched with original booking details. One row per cancellation. Source for cancellation pattern analysis."
+    meta:
+      owner: sachin
+      domain: hotel
+    columns:
+      - name: cancellation_id
+        description: "Unique cancellation identifier."
+        data_tests:
+          - not_null
+          - unique
+      - name: confirmation_number
+        description: "Parent reservation identifier."
+        data_tests:
+          - not_null
+      - name: property_code
+        description: "Property where booking was made."
+        data_tests:
+          - not_null
+      - name: booking_date
+        description: "Date original reservation was made."
+        data_tests:
+          - not_null
+      - name: check_in_date
+        description: "Original arrival date."
+        data_tests:
+          - not_null
+      - name: cancellation_date
+        description: "Date cancellation was processed."
+        data_tests:
+          - not_null
+      - name: days_before_checkin
+        description: "Days between cancellation and original check-in."
+        data_tests:
+          - not_null
+      - name: cancellation_window
+        description: "Timing bucket — SAME_DAY, LAST_MINUTE, SHORT, MEDIUM, ADVANCE."
+        data_tests:
+          - not_null
+      - name: reason_code
+        description: "Opera cancellation reason code."
+        data_tests:
+          - not_null
+      - name: reason_group
+        description: "Grouped reason — GUEST_INITIATED, HOTEL_INITIATED, NO_SHOW, DUPLICATE, GROUP, SYSTEM."
+        data_tests:
+          - not_null
+      - name: rate_channel
+        description: "Booking channel — DIRECT, OTA_PRIMARY etc."
+        data_tests:
+          - not_null
+      - name: market_segment
+        description: "Market segment — LEISURE, LOYALTY, CORPORATE etc."
+        data_tests:
+          - not_null
+      - name: is_direct_booking
+        description: "True when booking was made directly."
+        data_tests:
+          - not_null
+      - name: revenue_at_risk
+        description: "Total cost of cancelled reservation in local currency."
+        data_tests:
+          - not_null
+      - name: local_currency
+        description: "Currency of revenue at risk."
+        data_tests:
+          - not_null
+      - name: is_last_minute
+        description: "Yes when days_before_checkin <= 3. High-impact cancellation flag."
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ["Yes", "No"]
+
+  - name: int_loyalty_tier_movement
+    description: "Tier change history enriched with window functions. One row per tier change event. Includes previous change date, next tier, days spent at each tier, and latest record flag."
+    meta:
+      owner: sachin
+      domain: loyalty
+    columns:
+      - name: history_id
+        description: "Unique tier history record identifier."
+        data_tests:
+          - not_null
+          - unique
+      - name: member_number
+        description: "AVENIR member identifier."
+        data_tests:
+          - not_null
+      - name: previous_tier
+        description: "Tier before this change. Null for NEW_MEMBER events."
+      - name: new_tier
+        description: "Tier after this change."
+        data_tests:
+          - not_null
+      - name: change_type
+        description: "Type of tier change — NEW_MEMBER, UPGRADE, DOWNGRADE, RETAINED."
+        data_tests:
+          - not_null
+      - name: effective_date
+        description: "Date tier change took effect."
+        data_tests:
+          - not_null
+      - name: status_points_at_change
+        description: "Status points balance at time of change."
+        data_tests:
+          - not_null
+      - name: prev_change_date
+        description: "Date of previous tier change for this member. Null for first record."
+      - name: next_tier
+        description: "Next tier this member moved to. Null for latest record."
+      - name: days_at_tier
+        description: "Days spent at previous tier before this change. Null for first record."
+      - name: is_latest_record
+        description: "True for the most recent tier record per member."
+        data_tests:
+          - not_null
+
+  - name: int_loyalty_points_validated
+    description: "Points transactions validated against checkout dates. Flags M9 early points messiness. Invalid transactions retained but flagged — marts layer filters on is_valid_transaction."
+    meta:
+      owner: sachin
+      domain: loyalty
+    columns:
+      - name: transaction_id
+        description: "Unique transaction identifier."
+        data_tests:
+          - not_null
+          - unique
+      - name: member_number
+        description: "AVENIR member who earned points."
+        data_tests:
+          - not_null
+      - name: confirmation_number
+        description: "Source reservation. Null for non-stay transactions."
+      - name: transaction_type
+        description: "Earning activity — STAY, DINING, PARTNER, SHOPPING."
+        data_tests:
+          - not_null
+      - name: transaction_date
+        description: "Date points were posted."
+        data_tests:
+          - not_null
+      - name: status_points
+        description: "Status points earned."
+        data_tests:
+          - not_null
+      - name: reward_points
+        description: "Reward points earned."
+        data_tests:
+          - not_null
+      - name: tier_at_earn
+        description: "Member tier at time of earning."
+        data_tests:
+          - not_null
+      - name: property_code
+        description: "Property where points were earned."
+        data_tests:
+          - not_null
+      - name: check_out_date
+        description: "Checkout date from reservation. Null for non-stay transactions."
+      - name: has_early_points
+        description: "Ground truth flag — M9 early points injected deliberately."
+        data_tests:
+          - not_null
+      - name: is_valid_transaction
+        description: "True when transaction_date >= check_out_date. False for M9 violations."
+        data_tests:
+          - not_null
