@@ -242,3 +242,157 @@ models:
         description: "True when transaction_date >= check_out_date. False for M9 violations."
         data_tests:
           - not_null
+
+  - name: int_stay_duration_metrics
+    description: "Reservation records enriched with stay duration metrics and window function analytics. One row per reservation. Source for ALOS, lead time, and guest lifetime value analysis."
+    meta:
+      owner: sachin
+      domain: hotel
+    columns:
+      - name: confirmation_number
+        description: "Unique reservation identifier."
+        data_tests:
+          - not_null
+          - unique
+      - name: property_code
+        description: "Property where reservation is held."
+        data_tests:
+          - not_null
+      - name: guest_profile_id
+        description: "Guest making the reservation."
+        data_tests:
+          - not_null
+      - name: booking_date
+        description: "Date reservation was made."
+        data_tests:
+          - not_null
+      - name: check_in_date
+        description: "Arrival date."
+        data_tests:
+          - not_null
+      - name: check_out_date
+        description: "Departure date."
+        data_tests:
+          - not_null
+      - name: nights
+        description: "Length of stay in nights."
+        data_tests:
+          - not_null
+      - name: booking_status
+        description: "Current reservation status."
+        data_tests:
+          - not_null
+      - name: total_cost
+        description: "Total cost of stay in local currency."
+        data_tests:
+          - not_null
+      - name: local_currency
+        description: "Currency of this booking."
+        data_tests:
+          - not_null
+      - name: lead_time_days
+        description: "Days between booking date and check-in date. Advance booking indicator."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: brand_code
+        description: "Brand code from properties — LUX, PRE, MID, ECO."
+        data_tests:
+          - not_null
+      - name: avg_los_by_brand
+        description: "Average length of stay across all reservations for this brand. Window function — AVG() OVER PARTITION BY brand_code."
+        data_tests:
+          - not_null
+      - name: avg_los_by_property
+        description: "Average length of stay across all reservations for this property. Window function — AVG() OVER PARTITION BY property_code."
+        data_tests:
+          - not_null
+      - name: running_revenue_by_guest
+        description: "Cumulative revenue from this guest ordered by booking date. Window function — SUM() OVER PARTITION BY guest_profile_id ORDER BY booking_date."
+        data_tests:
+          - not_null
+      - name: property_booking_rank
+        description: "Rank of this reservation by total cost within the property. 1 = highest value booking. Window function — RANK() OVER PARTITION BY property_code."
+        data_tests:
+          - not_null
+      - name: lead_time_quartile
+        description: "Lead time bucket 1-4. Q1 = same week bookers, Q4 = 3+ months advance. Window function — NTILE(4) OVER ORDER BY lead_time_days."
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4]
+
+  - name: int_booking_channel_enriched
+    description: "Reservations enriched with rate code details from seed table and guest channel behaviour analytics. Tracks channel shifts from OTA to direct — key distribution strategy metric."
+    meta:
+      owner: sachin
+      domain: hotel
+    columns:
+      - name: confirmation_number
+        description: "Unique reservation identifier."
+        data_tests:
+          - not_null
+          - unique
+      - name: property_code
+        description: "Property where reservation is held."
+        data_tests:
+          - not_null
+      - name: guest_profile_id
+        description: "Guest making the reservation."
+        data_tests:
+          - not_null
+      - name: booking_date
+        description: "Date reservation was made."
+        data_tests:
+          - not_null
+      - name: booking_status
+        description: "Current reservation status."
+        data_tests:
+          - not_null
+      - name: rate_code
+        description: "Opera rate code."
+        data_tests:
+          - not_null
+      - name: rate_channel
+        description: "Derived booking channel."
+        data_tests:
+          - not_null
+      - name: rate_flexibility
+        description: "Derived flexibility tier."
+        data_tests:
+          - not_null
+      - name: includes_breakfast
+        description: "True for RB rate codes."
+        data_tests:
+          - not_null
+      - name: market_segment
+        description: "Derived market segment."
+        data_tests:
+          - not_null
+      - name: is_direct_booking
+        description: "True when booking was made directly."
+        data_tests:
+          - not_null
+      - name: rate_category
+        description: "Rate category from seed table — STANDARD, OTA, LOYALTY, CORPORATE etc."
+      - name: rate_description
+        description: "Full rate code description from seed table."
+      - name: first_booking_channel
+        description: "Channel used for guest first ever booking. FIRST_VALUE() window function."
+        data_tests:
+          - not_null
+      - name: guest_booking_count
+        description: "Total bookings made by this guest. COUNT() window function."
+        data_tests:
+          - not_null
+      - name: is_first_booking
+        description: "True for guest first booking. ROW_NUMBER() = 1 window function."
+        data_tests:
+          - not_null
+      - name: channel_shift
+        description: "Guest channel behaviour — CONSISTENT, OTA_TO_DIRECT, DIRECT_TO_OTA, CHANNEL_CHANGE."
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ["CONSISTENT", "OTA_TO_DIRECT", "DIRECT_TO_OTA", "CHANNEL_CHANGE"]
