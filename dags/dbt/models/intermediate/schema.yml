@@ -396,3 +396,47 @@ models:
           - not_null
           - accepted_values:
               values: ["CONSISTENT", "OTA_TO_DIRECT", "DIRECT_TO_OTA", "CHANNEL_CHANGE"]
+
+  - name: int_booking_payment_reconciliation
+    description: "Reservations reconciled against actual folio charges. Identifies payment mismatches between expected reservation total and actual charges posted. Source for finance audit and revenue leakage analysis."
+    meta:
+      owner: sachin
+      domain: hotel
+    columns:
+      - name: confirmation_number
+        description: "Unique reservation identifier."
+        data_tests:
+          - not_null
+          - unique
+      - name: property_code
+        description: "Property where reservation is held."
+        data_tests:
+          - not_null
+      - name: booking_status
+        description: "Current reservation status."
+        data_tests:
+          - not_null
+      - name: total_cost
+        description: "Expected total cost in local currency from reservation."
+        data_tests:
+          - not_null
+      - name: local_currency
+        description: "Currency of reservation."
+        data_tests:
+          - not_null
+      - name: total_cost_eur
+        description: "Expected total cost converted to EUR using static FX rates."
+        data_tests:
+          - not_null
+      - name: total_paid_eur
+        description: "Actual total charged in EUR — sum of all folio charges. Null for non-stayed reservations."
+      - name: payment_gap_eur
+        description: "Difference between actual paid and expected cost in EUR. Negative means overcharged."
+      - name: has_payment_mismatch
+        description: "True when absolute payment gap exceeds EUR 1 tolerance."
+        data_tests:
+          - not_null
+      - name: payment_gap_percentile
+        description: "PERCENT_RANK of this reservation payment gap across all reservations. High percentile indicates large gap."
+      - name: payment_gap_cumulative
+        description: "CUME_DIST of payment gap. Used for finance audit — top 5 percent mismatched bookings."
