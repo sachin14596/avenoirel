@@ -1,0 +1,40 @@
+models:
+  - name: dim_loyalty_tier
+    description: "Loyalty tier reference dimension sourced from avenir_tiers seed."
+    columns:
+      - name: loyalty_tier_key
+        description: "Surrogate key for loyalty tier."
+        data_tests:
+          - unique
+          - not_null
+      - name: tier_key
+        description: "Natural key from source seed."
+        data_tests:
+          - unique
+          - not_null
+      - name: tier_name
+        description: "Tier name."
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['CLASSIC', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND']
+      - name: min_nights
+        description: "Minimum qualifying nights for this tier."
+        data_tests:
+          - not_null
+      - name: max_nights
+        description: "Maximum nights before next tier."
+        data_tests:
+          - not_null
+      - name: status_points_multiplier
+        description: "Status points earn multiplier for this tier."
+        data_tests:
+          - not_null
+      - name: reward_points_multiplier
+        description: "Reward points earn multiplier for this tier."
+        data_tests:
+          - not_null
+      - name: tier_description
+        description: "Human-readable tier description."
+        data_tests:
+          - not_null
