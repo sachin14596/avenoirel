@@ -62,3 +62,27 @@ models:
         description: "True for major European public holidays — New Year, Christmas, Boxing Day."
         data_tests:
           - not_null
+
+  - name: dim_hotel_brand
+    description: "Hotel brand dimension derived from distinct brands in stg_hotel_properties."
+    columns:
+      - name: brand_key
+        description: "Surrogate key for hotel brand."
+        data_tests:
+          - unique
+          - not_null
+      - name: brand_code
+        description: "Natural key for brand."
+        data_tests:
+          - unique
+          - not_null
+      - name: brand_name
+        description: "Full brand name."
+        data_tests:
+          - not_null
+      - name: tier
+        description: "Brand tier classification."
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['LUXURY', 'PREMIUM', 'MIDSCALE', 'ECONOMY']
