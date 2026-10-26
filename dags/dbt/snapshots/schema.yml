@@ -1,0 +1,9 @@
+version: 2
+
+snapshots:
+  - name: snap_hotel_properties
+    description: "SCD Type 2 snapshot of hotel properties tracking tier, room count, and amenity changes over time."
+    columns:
+      - name: property_id
+        description: "Primary key / unique identifier for the property."
+      # baaki columns ke descriptions bhi add kar sakte ho agar required hain

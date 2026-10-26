@@ -1,0 +1,30 @@
+
+models:
+  - name: dim_property
+    description: "Property dimension with SCD Type 2 history from snap_hotel_properties."
+    columns:
+      - name: property_key
+        description: "Surrogate key — property_code + dbt_valid_from."
+        data_tests:
+          - unique
+          - not_null
+      - name: property_code
+        description: "Natural key — not unique due to SCD2 versioning."
+        data_tests:
+          - not_null
+      - name: tier
+        description: "Brand tier at this version."
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['LUXURY', 'PREMIUM', 'MIDSCALE', 'ECONOMY']
+      - name: dbt_valid_from
+        description: "Start date of this property version."
+        data_tests:
+          - not_null
+      - name: is_current
+        description: "True if this is the current active version."
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
