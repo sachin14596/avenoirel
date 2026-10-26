@@ -1,0 +1,64 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: "Calendar dimension table generated from Snowflake GENERATOR function. One row per date covering 2022-01-01 to 2024-12-31. Spine for all time-based analysis across revenue, loyalty, and operations domains."
+    meta:
+      owner: sachin
+      domain: core
+    columns:
+      - name: date_id
+        description: "The calendar date. Primary key."
+        data_tests:
+          - not_null
+          - unique
+      - name: day_of_week
+        description: "Day of week number. Snowflake convention: Sunday=0, Saturday=6."
+        data_tests:
+          - not_null
+      - name: day_name
+        description: "Day name — Mon, Tue, Wed, Thu, Fri, Sat, Sun."
+        data_tests:
+          - not_null
+      - name: is_weekend
+        description: "True for Saturday and Sunday."
+        data_tests:
+          - not_null
+      - name: week_number
+        description: "Week of year — 1 to 52."
+        data_tests:
+          - not_null
+      - name: month_number
+        description: "Month number — 1 to 12."
+        data_tests:
+          - not_null
+      - name: month_name
+        description: "Month name — Jan, Feb, Mar etc."
+        data_tests:
+          - not_null
+      - name: quarter_number
+        description: "Quarter number — 1 to 4."
+        data_tests:
+          - not_null
+      - name: year_number
+        description: "Calendar year — 2022, 2023, 2024."
+        data_tests:
+          - not_null
+      - name: fiscal_year
+        description: "Fiscal year. Same as calendar year for Accor — January to December."
+        data_tests:
+          - not_null
+      - name: fiscal_quarter
+        description: "Fiscal quarter. Same as calendar quarter for Accor."
+        data_tests:
+          - not_null
+      - name: season
+        description: "Hospitality season — HIGH (Jun-Sep, Dec), LOW (Jan-Mar, Nov), SHOULDER (Apr-May, Oct)."
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ["HIGH", "LOW", "SHOULDER"]
+      - name: is_holiday
+        description: "True for major European public holidays — New Year, Christmas, Boxing Day."
+        data_tests:
+          - not_null
