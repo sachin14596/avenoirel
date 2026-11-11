@@ -28,3 +28,43 @@ models:
           - not_null
           - accepted_values:
               values: [true, false]
+  - name: fct_revpar_daily
+    description: "Daily RevPAR fact table at property and date grain. One row per property per day."
+    columns:
+      - name: revpar_key
+        description: "Surrogate key -- hash of property_code and stay_date."
+        data_tests:
+          - not_null
+          - unique
+      - name: property_key
+        description: "Foreign key to dim_property (current record)."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_property')
+              field: property_key
+      - name: property_code
+        description: "Natural key for the property."
+        data_tests:
+          - not_null
+      - name: stay_date
+        description: "The date for which KPIs are calculated."
+        data_tests:
+          - not_null
+      - name: revpar_eur
+        description: "Revenue Per Available Room in EUR."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+              severity: warn
+      - name: occupancy_rate
+        description: "Rooms sold divided by rooms available."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0 AND occupancy_rate <= 1"
+              severity: warn
+      - name: loaded_at
+        description: "Timestamp when the record was loaded into the mart."
+        data_tests:
+          - not_null
