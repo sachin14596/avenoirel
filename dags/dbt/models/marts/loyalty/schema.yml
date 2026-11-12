@@ -37,4 +37,27 @@ models:
       - name: tier_description
         description: "Human-readable tier description."
         data_tests:
+          - not_null  
+  - name: fct_loyalty_points_earned
+    description: "One row per valid loyalty points transaction with status and reward points split."
+    columns:
+      - name: points_earned_key
+        tests:
+          - unique
+          - not_null
+      - name: transaction_id
+        tests:
+          - unique
+          - not_null
+      - name: member_number
+        tests:
+          - not_null
+      - name: transaction_type
+        tests:
+          - not_null
+      - name: status_points
+        tests:
+          - not_null
+      - name: reward_points
+        tests:
           - not_null
