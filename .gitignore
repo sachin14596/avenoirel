@@ -27,3 +27,8 @@ Thumbs.db
 dags/dbt/profiles.yml
 
 dags/dbt/.user.yml
+
+# Astronomer
+.astro/
+airflow_settings.yaml
+include/

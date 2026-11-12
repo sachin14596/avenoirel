@@ -26,17 +26,23 @@ models:
     staging:
       +schema: staging
       +materialized: view
+      +tags: ["staging"]
     intermediate:
       +schema: intermediate
       +materialized: view
+      +tags: ["intermediate"]
     marts:
       +schema: marts
       +materialized: table
       revenue:
         +materialized: table
+        +tags: ["revenue"]
       loyalty:
         +materialized: table
+        +tags: ["loyalty"]
       operations:
         +materialized: table
+        +tags: ["operations"]
       core:
         +materialized: table
+        +tags: ["core"]
