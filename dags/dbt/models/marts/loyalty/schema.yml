@@ -61,3 +61,26 @@ models:
       - name: reward_points
         tests:
           - not_null
+
+  - name: fct_tier_movements
+    description: "One row per loyalty tier change event per member."
+    columns:
+      - name: tier_movement_key
+        tests:
+          - unique
+          - not_null
+      - name: history_id
+        tests:
+          - unique
+          - not_null
+      - name: member_number
+        tests:
+          - not_null
+      - name: change_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['UPGRADE', 'DOWNGRADE', 'RETAINED', 'NEW_MEMBER']
+      - name: effective_date
+        tests:
+          - not_null
