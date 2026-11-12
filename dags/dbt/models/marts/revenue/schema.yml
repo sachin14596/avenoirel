@@ -68,3 +68,36 @@ models:
         description: "Timestamp when the record was loaded into the mart."
         data_tests:
           - not_null
+  - name: fct_adr_daily
+    description: "Daily ADR fact table at property and date grain. One row per property per day."
+    columns:
+      - name: adr_key
+        description: "Surrogate key -- hash of property_code and stay_date."
+        data_tests:
+          - not_null
+          - unique
+      - name: property_key
+        description: "Foreign key to dim_property (current record)."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_property')
+              field: property_key
+      - name: property_code
+        description: "Natural key for the property."
+        data_tests:
+          - not_null
+      - name: stay_date
+        description: "The date for which ADR is calculated."
+        data_tests:
+          - not_null
+      - name: avg_daily_rate_eur
+        description: "Average Daily Rate in EUR. Room revenue divided by rooms sold."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+              severity: warn
+      - name: loaded_at
+        description: "Timestamp when the record was loaded into the mart."
+        data_tests:
+          - not_null
