@@ -55,3 +55,20 @@ models:
           - not_null
           - accepted_values:
               values: ['GUEST_INITIATED', 'HOTEL_INITIATED', 'NO_SHOW', 'DUPLICATE', 'GROUP', 'SYSTEM']
+
+  - name: fct_occupancy_daily
+    description: "One row per property per date with room availability and occupancy rate."
+    columns:
+      - name: occupancy_key
+        tests:
+          - unique
+          - not_null
+      - name: property_key
+        tests:
+          - not_null
+      - name: stay_date
+        tests:
+          - not_null
+      - name: occupancy_rate
+        tests:
+          - not_null
