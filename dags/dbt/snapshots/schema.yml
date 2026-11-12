@@ -6,4 +6,3 @@ snapshots:
     columns:
       - name: property_id
         description: "Primary key / unique identifier for the property."
-      # baaki columns ke descriptions bhi add kar sakte ho agar required hain
