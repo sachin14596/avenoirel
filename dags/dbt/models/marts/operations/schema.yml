@@ -31,3 +31,27 @@ models:
           - not_null
           - accepted_values:
               values: [true, false]
+  - name: fct_cancellations
+    description: "One row per cancellation with reason, timing window, and revenue at risk."
+    columns:
+      - name: cancellation_key
+        tests:
+          - unique
+          - not_null
+      - name: confirmation_number
+        tests:
+          - unique
+          - not_null
+      - name: property_key
+        tests:
+          - not_null
+      - name: cancellation_window
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['SAME_DAY', 'SHORT', 'MEDIUM', 'ADVANCE', 'LAST_MINUTE']
+      - name: reason_group
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['GUEST_INITIATED', 'HOTEL_INITIATED', 'NO_SHOW', 'DUPLICATE', 'GROUP', 'SYSTEM']
