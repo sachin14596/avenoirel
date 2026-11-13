@@ -66,12 +66,19 @@ jobs:
 
       - name: dbt build — changed models only
         run: |
-          dbt build \
-            --select state:modified+ \
-            --defer \
-            --state prod_manifest/ \
-            --project-dir dags/dbt \
-            --profiles-dir dags/dbt
+          if [ -f prod_manifest/manifest.json ]; then
+            dbt build \
+              --select state:modified+ \
+              --defer \
+              --state prod_manifest/ \
+              --project-dir dags/dbt \
+              --profiles-dir dags/dbt
+          else
+            dbt build \
+              --project-dir dags/dbt \
+              --profiles-dir dags/dbt
+          fi
+          
         env:
           SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
           SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
