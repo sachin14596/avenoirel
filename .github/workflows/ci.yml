@@ -52,6 +52,9 @@ jobs:
           SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
           SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
           SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+          
+      - name: dbt deps
+        run: dbt deps --project-dir dags/dbt --profiles-dir dags/dbt
 
       - name: Download prod manifest
         continue-on-error: true
