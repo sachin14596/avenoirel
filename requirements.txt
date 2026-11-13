@@ -2,3 +2,5 @@ astronomer-cosmos==1.16.0
 dbt-core==1.9.5
 dbt-snowflake==1.9.3
 apache-airflow-providers-snowflake==6.21.0
+sqlfluff==3.3.1
+sqlfluff-templater-dbt==3.3.1
