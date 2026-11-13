@@ -1,0 +1,6 @@
+tier_key,tier_name,min_nights,max_nights,status_points_multiplier,reward_points_multiplier,tier_description
+1,CLASSIC,0,9,1,1,Entry level membership with basic benefits
+2,SILVER,10,29,2,1.5,Silver status with enhanced earn rates
+3,GOLD,30,59,3,2,Gold status with premium benefits and bonus points
+4,PLATINUM,60,99,4,2.5,Platinum status with exclusive benefits
+5,DIAMOND,100,9999,5,3,Diamond status with highest tier benefits and maximum earn rates

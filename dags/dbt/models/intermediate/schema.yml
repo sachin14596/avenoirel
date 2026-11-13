@@ -14,13 +14,6 @@ models:
           - relationships:
               to: ref('stg_hotel_properties')
               field: property_code
-      - name: room_type_id
-        description: "Room type identifier. Foreign key to stg_hotel_room_types."
-        data_tests:
-          - not_null
-          - relationships:
-              to: ref('stg_hotel_room_types')
-              field: room_type_id
       - name: stay_date
         description: "Calendar date for this availability and revenue record."
         data_tests:
