@@ -1,0 +1,59 @@
+name: Deploy — dbt Production Build
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  dbt_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt --break-system-packages
+
+      - name: dbt build — full run
+        run: |
+          dbt build \
+            --project-dir dags/dbt \
+            --profiles-dir dags/dbt
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+
+      - name: dbt docs generate
+        run: |
+          dbt docs generate \
+            --project-dir dags/dbt \
+            --profiles-dir dags/dbt
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+
+      - name: Save manifest for Slim CI
+        uses: actions/upload-artifact@v4
+        with:
+          name: prod-manifest
+          path: dags/dbt/target/manifest.json
+          retention-days: 30
+
+      # NOTE: In production, the next step would be:
+      # astro deploy --dags -f ${{ secrets.DEPLOYMENT_ID }}
+      # This requires an Astronomer Cloud deployment.
+      # Documented as portfolio constraint — architecture is production-ready.
