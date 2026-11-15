@@ -39,6 +39,9 @@ jobs:
                 threads: 4
           EOF
 
+      - name: dbt deps
+        run: dbt deps --project-dir dags/dbt --profiles-dir dags/dbt
+
       - name: dbt build — full run
         run: |
           dbt build \
