@@ -5,29 +5,29 @@ models:
     description: "One row per booking with stay metrics, lead time, and total cost in EUR."
     columns:
       - name: booking_key
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: confirmation_number
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: property_key
-        tests:
+        data_tests:
           - not_null
       - name: booking_status
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               values: ['CONFIRMED', 'CHECKED_IN', 'CHECKED_OUT', 'CANCELLED', 'NO_SHOW']
       - name: length_of_stay_nights
-        tests:
+        data_tests:
           - not_null
       - name: lead_time_days
-        tests:
+        data_tests:
           - not_null
       - name: is_direct_booking
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               values: [true, false]
@@ -35,23 +35,23 @@ models:
     description: "One row per cancellation with reason, timing window, and revenue at risk."
     columns:
       - name: cancellation_key
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: confirmation_number
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: property_key
-        tests:
+        data_tests:
           - not_null
       - name: cancellation_window
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               values: ['SAME_DAY', 'SHORT', 'MEDIUM', 'ADVANCE', 'LAST_MINUTE']
       - name: reason_group
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               values: ['GUEST_INITIATED', 'HOTEL_INITIATED', 'NO_SHOW', 'DUPLICATE', 'GROUP', 'SYSTEM']
@@ -60,15 +60,15 @@ models:
     description: "One row per property per date with room availability and occupancy rate."
     columns:
       - name: occupancy_key
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: property_key
-        tests:
+        data_tests:
           - not_null
       - name: stay_date
-        tests:
+        data_tests:
           - not_null
       - name: occupancy_rate
-        tests:
+        data_tests:
           - not_null

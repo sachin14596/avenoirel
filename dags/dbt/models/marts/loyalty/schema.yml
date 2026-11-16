@@ -37,50 +37,50 @@ models:
       - name: tier_description
         description: "Human-readable tier description."
         data_tests:
-          - not_null  
+          - not_null
   - name: fct_loyalty_points_earned
     description: "One row per valid loyalty points transaction with status and reward points split."
     columns:
       - name: points_earned_key
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: transaction_id
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: member_number
-        tests:
+        data_tests:
           - not_null
       - name: transaction_type
-        tests:
+        data_tests:
           - not_null
       - name: status_points
-        tests:
+        data_tests:
           - not_null
       - name: reward_points
-        tests:
+        data_tests:
           - not_null
 
   - name: fct_tier_movements
     description: "One row per loyalty tier change event per member."
     columns:
       - name: tier_movement_key
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: history_id
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: member_number
-        tests:
+        data_tests:
           - not_null
       - name: change_type
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               values: ['UPGRADE', 'DOWNGRADE', 'RETAINED', 'NEW_MEMBER']
       - name: effective_date
-        tests:
+        data_tests:
           - not_null
