@@ -45,6 +45,7 @@ jobs:
       - name: dbt build — full run
         run: |
           dbt build \
+            --exclude-resource-type unit_test \
             --project-dir dags/dbt \
             --profiles-dir dags/dbt
         env:

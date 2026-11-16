@@ -1,28 +1,75 @@
-
 models:
   - name: dim_property
     description: "Property dimension with SCD Type 2 history from snap_hotel_properties."
+    config:
+      contract:
+        enforced: true
     columns:
       - name: property_key
-        description: "Surrogate key — property_code + dbt_valid_from."
+        data_type: varchar
+        description: "Surrogate key: property_code + dbt_valid_from."
+        constraints:
+          - type: not_null
         data_tests:
           - unique
           - not_null
       - name: property_code
-        description: "Natural key — not unique due to SCD2 versioning."
+        data_type: varchar
+        description: "Natural key. Not unique due to SCD2 versioning."
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
+      - name: property_name
+        data_type: varchar
+        description: "Property name."
+      - name: brand_code
+        data_type: varchar
+        description: "Brand code of the property."
+      - name: brand_name
+        data_type: varchar
+        description: "Brand name of the property."
       - name: tier
+        data_type: varchar
         description: "Brand tier at this version."
         data_tests:
           - not_null
           - accepted_values:
               values: ['LUXURY', 'PREMIUM', 'MIDSCALE', 'ECONOMY']
+      - name: star_rating
+        data_type: number(38,0)
+        description: "Star rating of the property."
+      - name: city
+        data_type: varchar
+        description: "City of the property."
+      - name: country_code
+        data_type: varchar
+        description: "Country code of the property."
+      - name: local_currency
+        data_type: varchar
+        description: "Local currency code of the property."
+      - name: total_rooms
+        data_type: number(38,0)
+        description: "Total rooms in the property master. For most properties this differs from the calendar inventory (see assert_property_rooms_match_inventory); KPIs use the calendar inventory."
+      - name: has_restaurant
+        data_type: boolean
+        description: "True if the property has a restaurant."
+      - name: has_parking
+        data_type: boolean
+        description: "True if the property has parking."
+      - name: has_spa
+        data_type: boolean
+        description: "True if the property has a spa."
       - name: dbt_valid_from
+        data_type: date
         description: "Start date of this property version."
         data_tests:
           - not_null
+      - name: dbt_valid_to
+        data_type: date
+        description: "End date of this property version."
       - name: is_current
+        data_type: boolean
         description: "True if this is the current active version."
         data_tests:
           - not_null
@@ -30,74 +77,134 @@ models:
               values: [true, false]
   - name: fct_revpar_daily
     description: "Daily RevPAR fact table at property and date grain. One row per property per day."
+    config:
+      contract:
+        enforced: true
     columns:
       - name: revpar_key
-        description: "Surrogate key -- hash of property_code and stay_date."
+        data_type: varchar
+        description: "Surrogate key: hash of property_code and stay_date."
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - unique
       - name: property_key
+        data_type: varchar
         description: "Foreign key to dim_property (current record)."
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_property')
               field: property_key
       - name: property_code
+        data_type: varchar
         description: "Natural key for the property."
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
       - name: stay_date
+        data_type: date
         description: "The date for which KPIs are calculated."
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
+      - name: total_rooms
+        data_type: number(38,0)
+        description: "Rooms of all room types in the availability calendar for this property and date."
+      - name: ooo_rooms
+        data_type: number(38,0)
+        description: "Rooms out of order, not sellable."
+      - name: rooms_available
+        data_type: number(38,0)
+        description: "Sellable rooms: total rooms minus out of order rooms. RevPAR and occupancy denominator."
+      - name: rooms_sold
+        data_type: number(18,0)
+        description: "Sold rooms: CHECKED_IN, CHECKED_OUT and NO_SHOW stays. Cancelled bookings, test records and duplicates are excluded."
+      - name: room_revenue_eur
+        data_type: float
+        description: "Room revenue in EUR. Each stay's room folio is spread evenly across its nights."
+      - name: avg_daily_rate_eur
+        data_type: float
+        description: "ADR in EUR: room revenue divided by rooms sold. NULL when no rooms were sold."
+      - name: occupancy_rate
+        data_type: number(26,4)
+        description: "Rooms sold divided by rooms available. NULL when no rooms are available."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0 AND occupancy_rate <= 1"
+              config:
+                store_failures: true
       - name: revpar_eur
+        data_type: float
         description: "Revenue Per Available Room in EUR."
         data_tests:
           - not_null
           - dbt_utils.expression_is_true:
               expression: ">= 0"
               severity: warn
-      - name: occupancy_rate
-        description: "Rooms sold divided by rooms available."
-        data_tests:
-          - dbt_utils.expression_is_true:
-              expression: ">= 0 AND occupancy_rate <= 1"
-              severity: warn
       - name: loaded_at
+        data_type: timestamp_ltz
         description: "Timestamp when the record was loaded into the mart."
         data_tests:
           - not_null
   - name: fct_adr_daily
     description: "Daily ADR fact table at property and date grain. One row per property per day."
+    config:
+      contract:
+        enforced: true
     columns:
       - name: adr_key
-        description: "Surrogate key -- hash of property_code and stay_date."
+        data_type: varchar
+        description: "Surrogate key: hash of property_code and stay_date."
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - unique
       - name: property_key
+        data_type: varchar
         description: "Foreign key to dim_property (current record)."
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
           - relationships:
               to: ref('dim_property')
               field: property_key
       - name: property_code
+        data_type: varchar
         description: "Natural key for the property."
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
       - name: stay_date
+        data_type: date
         description: "The date for which ADR is calculated."
+        constraints:
+          - type: not_null
         data_tests:
           - not_null
+      - name: rooms_sold
+        data_type: number(18,0)
+        description: "Sold rooms: CHECKED_IN, CHECKED_OUT and NO_SHOW stays. Cancelled bookings, test records and duplicates are excluded."
+      - name: room_revenue_eur
+        data_type: float
+        description: "Room revenue in EUR. Each stay's room folio is spread evenly across its nights."
       - name: avg_daily_rate_eur
-        description: "Average Daily Rate in EUR. Room revenue divided by rooms sold."
+        data_type: float
+        description: "Average Daily Rate in EUR. Room revenue divided by rooms sold. NULL when no rooms were sold."
         data_tests:
           - dbt_utils.expression_is_true:
               expression: ">= 0"
               severity: warn
       - name: loaded_at
+        data_type: timestamp_ltz
         description: "Timestamp when the record was loaded into the mart."
         data_tests:
           - not_null

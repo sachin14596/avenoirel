@@ -19,4 +19,4 @@ repos:
     hooks:
       - id: dbt-parse
       - id: check-model-has-description
-        exclude: ^dags/dbt/macros/
+        exclude: '^(dags/dbt/(macros|tests|snapshots)/|[.]pre-commit-config[.]yaml$)'

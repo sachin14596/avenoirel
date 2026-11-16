@@ -3,72 +3,157 @@ version: 2
 models:
   - name: fct_bookings
     description: "One row per booking with stay metrics, lead time, and total cost in EUR."
+    config:
+      contract:
+        enforced: true
     columns:
       - name: booking_key
-        tests:
+        data_type: varchar
+        description: "Surrogate key for the booking."
+        constraints:
+          - type: not_null
+        data_tests:
           - unique
           - not_null
       - name: confirmation_number
-        tests:
+        data_type: varchar
+        description: "Natural key of the reservation."
+        constraints:
+          - type: not_null
+        data_tests:
           - unique
           - not_null
       - name: property_key
-        tests:
+        data_type: varchar
+        description: "Foreign key to dim_property."
+        constraints:
+          - type: not_null
+        data_tests:
           - not_null
+      - name: property_code
+        data_type: varchar
+        description: "Natural key of the property."
+      - name: guest_profile_id
+        data_type: varchar
+        description: "Guest profile identifier."
+      - name: booking_date
+        data_type: date
+        description: "Date the booking was made."
+      - name: check_in_date
+        data_type: date
+        description: "Arrival date."
+      - name: check_out_date
+        data_type: date
+        description: "Departure date."
+      - name: rate_channel
+        data_type: varchar
+        description: "Channel attribute of the rate code used for the booking."
       - name: booking_status
-        tests:
+        data_type: varchar
+        description: "Reservation status."
+        data_tests:
           - not_null
           - accepted_values:
               values: ['CONFIRMED', 'CHECKED_IN', 'CHECKED_OUT', 'CANCELLED', 'NO_SHOW']
       - name: length_of_stay_nights
-        tests:
+        data_type: number(9,0)
+        description: "Number of nights of the stay."
+        data_tests:
           - not_null
       - name: lead_time_days
-        tests:
+        data_type: number(9,0)
+        description: "Days between booking date and check-in date."
+        data_tests:
           - not_null
+      - name: total_cost_eur
+        data_type: float
+        description: "Total cost of the booking in EUR."
       - name: is_direct_booking
-        tests:
+        data_type: boolean
+        description: "True if the booking was made directly, not through an intermediary."
+        data_tests:
           - not_null
           - accepted_values:
               values: [true, false]
+      - name: loaded_at
+        data_type: timestamp_ltz
+        description: "Timestamp when the record was loaded into the mart."
   - name: fct_cancellations
     description: "One row per cancellation with reason, timing window, and revenue at risk."
     columns:
       - name: cancellation_key
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: confirmation_number
-        tests:
+        data_tests:
           - unique
           - not_null
       - name: property_key
-        tests:
+        data_tests:
           - not_null
       - name: cancellation_window
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               values: ['SAME_DAY', 'SHORT', 'MEDIUM', 'ADVANCE', 'LAST_MINUTE']
       - name: reason_group
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               values: ['GUEST_INITIATED', 'HOTEL_INITIATED', 'NO_SHOW', 'DUPLICATE', 'GROUP', 'SYSTEM']
 
   - name: fct_occupancy_daily
     description: "One row per property per date with room availability and occupancy rate."
+    config:
+      contract:
+        enforced: true
     columns:
       - name: occupancy_key
-        tests:
+        data_type: varchar
+        description: "Surrogate key: hash of property_code and stay_date."
+        constraints:
+          - type: not_null
+        data_tests:
           - unique
           - not_null
       - name: property_key
-        tests:
+        data_type: varchar
+        description: "Foreign key to dim_property (current record)."
+        constraints:
+          - type: not_null
+        data_tests:
           - not_null
+      - name: property_code
+        data_type: varchar
+        description: "Natural key of the property."
       - name: stay_date
-        tests:
+        data_type: date
+        description: "The date for which occupancy is calculated."
+        constraints:
+          - type: not_null
+        data_tests:
           - not_null
+      - name: total_rooms
+        data_type: number(38,0)
+        description: "Rooms of all room types in the availability calendar for this property and date."
+      - name: ooo_rooms
+        data_type: number(38,0)
+        description: "Rooms out of order, not sellable."
+      - name: rooms_available
+        data_type: number(38,0)
+        description: "Sellable rooms: total rooms minus out of order rooms."
+      - name: rooms_sold
+        data_type: number(18,0)
+        description: "Sold rooms: CHECKED_IN, CHECKED_OUT and NO_SHOW stays. Cancelled bookings, test records and duplicates are excluded."
       - name: occupancy_rate
-        tests:
-          - not_null
+        data_type: number(26,4)
+        description: "Rooms sold divided by rooms available. NULL when no rooms are available."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0 AND occupancy_rate <= 1"
+              config:
+                store_failures: true
+      - name: loaded_at
+        data_type: timestamp_ltz
+        description: "Timestamp when the record was loaded into the mart."
