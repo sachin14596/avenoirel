@@ -1,0 +1,89 @@
+unit_tests:
+  - name: test_revenue_fan_out_two_room_types_one_reservation
+    description: "One reservation must count as 1 room sold and carry its folio amount once, even when the property has 2 room types on that date."
+    model: int_revenue_by_property_daily
+    given:
+      - input: ref('stg_ops_room_availability')
+        rows:
+          - {property_code: P1, stay_date: '2024-01-02', total_rooms: 10, ooo_rooms: 0}
+          - {property_code: P1, stay_date: '2024-01-02', total_rooms: 5, ooo_rooms: 0}
+      - input: ref('stg_hotel_reservations')
+        rows:
+          - {confirmation_number: C1, property_code: P1, booking_status: CHECKED_OUT, check_in_date: '2024-01-02', check_out_date: '2024-01-03'}
+      - input: ref('stg_hotel_folios')
+        rows:
+          - {confirmation_number: C1, charge_type: ROOM, amount_eur: 100}
+    expect:
+      rows:
+        - {property_code: P1, stay_date: '2024-01-02', rooms_sold: 1, room_revenue_eur: 100}
+
+  - name: test_available_rooms_sum_across_room_types
+    description: "Property rooms must be the sum over room types (10 + 5), and OOO rooms are subtracted (15 - 2 = 13)."
+    model: int_revenue_by_property_daily
+    given:
+      - input: ref('stg_ops_room_availability')
+        rows:
+          - {property_code: P1, stay_date: '2024-01-02', total_rooms: 10, ooo_rooms: 0}
+          - {property_code: P1, stay_date: '2024-01-02', total_rooms: 5, ooo_rooms: 2}
+      - input: ref('stg_hotel_reservations')
+        rows:
+          - {confirmation_number: C9, property_code: P9, booking_status: CHECKED_OUT, check_in_date: '2024-02-01', check_out_date: '2024-02-02'}
+      - input: ref('stg_hotel_folios')
+        rows:
+          - {confirmation_number: C9, charge_type: ROOM, amount_eur: 50}
+    expect:
+      rows:
+        - {property_code: P1, stay_date: '2024-01-02', total_rooms: 15, ooo_rooms: 2, rooms_available: 13}
+
+  - name: test_revenue_is_spread_evenly_across_nights
+    description: "A 3-night stay with a 300 EUR room folio books 100 EUR on each night."
+    model: int_revenue_by_property_daily
+    given:
+      - input: ref('stg_ops_room_availability')
+        rows:
+          - {property_code: P1, stay_date: '2024-01-02', total_rooms: 10, ooo_rooms: 0}
+          - {property_code: P1, stay_date: '2024-01-03', total_rooms: 10, ooo_rooms: 0}
+      - input: ref('stg_hotel_reservations')
+        rows:
+          - {confirmation_number: C1, property_code: P1, booking_status: CHECKED_OUT, check_in_date: '2024-01-02', check_out_date: '2024-01-05'}
+      - input: ref('stg_hotel_folios')
+        rows:
+          - {confirmation_number: C1, charge_type: ROOM, amount_eur: 300}
+    expect:
+      rows:
+        - {property_code: P1, stay_date: '2024-01-02', rooms_sold: 1, room_revenue_eur: 100}
+        - {property_code: P1, stay_date: '2024-01-03', rooms_sold: 1, room_revenue_eur: 100}
+
+  - name: test_zero_sales_day_has_null_adr_and_zero_revpar
+    description: "A day with no sold rooms: sales are 0, ADR is undefined (NULL), occupancy and RevPAR are 0."
+    model: int_revenue_by_property_daily
+    given:
+      - input: ref('stg_ops_room_availability')
+        rows:
+          - {property_code: P1, stay_date: '2024-01-02', total_rooms: 10, ooo_rooms: 0}
+      - input: ref('stg_hotel_reservations')
+        rows:
+          - {confirmation_number: C9, property_code: P9, booking_status: CHECKED_OUT, check_in_date: '2024-02-01', check_out_date: '2024-02-02'}
+      - input: ref('stg_hotel_folios')
+        rows:
+          - {confirmation_number: C9, charge_type: ROOM, amount_eur: 50}
+    expect:
+      rows:
+        - {property_code: P1, stay_date: '2024-01-02', rooms_sold: 0, room_revenue_eur: 0, avg_daily_rate_eur: null, occupancy_rate: 0, revpar_eur: 0}
+
+  - name: test_all_rooms_out_of_order_gives_null_occupancy_and_revpar
+    description: "When every room is out of order nothing is sellable: available rooms are 0 and the rates divide by zero, so they are NULL."
+    model: int_revenue_by_property_daily
+    given:
+      - input: ref('stg_ops_room_availability')
+        rows:
+          - {property_code: P1, stay_date: '2024-01-02', total_rooms: 10, ooo_rooms: 10}
+      - input: ref('stg_hotel_reservations')
+        rows:
+          - {confirmation_number: C9, property_code: P9, booking_status: CHECKED_OUT, check_in_date: '2024-02-01', check_out_date: '2024-02-02'}
+      - input: ref('stg_hotel_folios')
+        rows:
+          - {confirmation_number: C9, charge_type: ROOM, amount_eur: 50}
+    expect:
+      rows:
+        - {property_code: P1, stay_date: '2024-01-02', rooms_available: 0, occupancy_rate: null, revpar_eur: null}
