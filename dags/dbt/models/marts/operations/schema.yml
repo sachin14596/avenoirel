@@ -149,6 +149,11 @@ models:
       - name: occupancy_rate
         data_type: number(26,4)
         description: "Rooms sold divided by rooms available. NULL when no rooms are available."
+        data_tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0 AND occupancy_rate <= 1"
+              config:
+                store_failures: true
       - name: loaded_at
         data_type: timestamp_ltz
         description: "Timestamp when the record was loaded into the mart."

@@ -137,7 +137,8 @@ models:
         data_tests:
           - dbt_utils.expression_is_true:
               expression: ">= 0 AND occupancy_rate <= 1"
-              severity: warn
+              config:
+                store_failures: true
       - name: revpar_eur
         data_type: float
         description: "Revenue Per Available Room in EUR."
