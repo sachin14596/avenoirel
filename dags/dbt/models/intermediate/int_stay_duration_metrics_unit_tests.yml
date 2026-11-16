@@ -1,0 +1,37 @@
+unit_tests:
+  - name: test_avg_los_by_property_and_brand
+    description: "ALOS per property is the mean of nights for its stays; ALOS per brand is the mean across all stays of the brand."
+    model: int_stay_duration_metrics
+    given:
+      - input: ref('stg_hotel_properties')
+        rows:
+          - {property_code: P1, brand_code: B1}
+          - {property_code: P2, brand_code: B1}
+      - input: ref('stg_hotel_reservations')
+        rows:
+          - {confirmation_number: C1, property_code: P1, booking_status: CHECKED_OUT, nights: 2}
+          - {confirmation_number: C2, property_code: P1, booking_status: CHECKED_OUT, nights: 4}
+          - {confirmation_number: C3, property_code: P2, booking_status: CHECKED_OUT, nights: 6}
+    expect:
+      rows:
+        - {confirmation_number: C1, avg_los_by_property: 3, avg_los_by_brand: 4}
+        - {confirmation_number: C2, avg_los_by_property: 3, avg_los_by_brand: 4}
+        - {confirmation_number: C3, avg_los_by_property: 6, avg_los_by_brand: 4}
+
+  - name: test_avg_los_ignores_cancelled_bookings
+    description: "A cancelled booking never became a stay, so its nights must not enter ALOS. The cancelled row itself stays in the model."
+    model: int_stay_duration_metrics
+    given:
+      - input: ref('stg_hotel_properties')
+        rows:
+          - {property_code: P1, brand_code: B1}
+      - input: ref('stg_hotel_reservations')
+        rows:
+          - {confirmation_number: C1, property_code: P1, booking_status: CHECKED_OUT, nights: 2}
+          - {confirmation_number: C2, property_code: P1, booking_status: CHECKED_OUT, nights: 4}
+          - {confirmation_number: C3, property_code: P1, booking_status: CANCELLED, nights: 10}
+    expect:
+      rows:
+        - {confirmation_number: C1, avg_los_by_property: 3, avg_los_by_brand: 3}
+        - {confirmation_number: C2, avg_los_by_property: 3, avg_los_by_brand: 3}
+        - {confirmation_number: C3, avg_los_by_property: 3, avg_los_by_brand: 3}

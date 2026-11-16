@@ -20,8 +20,10 @@ joined AS (
         r.local_currency,
         p.brand_code,
         DATEDIFF(DAY, r.booking_date, r.check_in_date) AS lead_time_days,
-        AVG(r.nights) OVER (PARTITION BY p.brand_code) AS avg_los_by_brand,
-        AVG(r.nights)
+        AVG(CASE WHEN r.booking_status != 'CANCELLED' THEN r.nights END)
+            OVER (PARTITION BY p.brand_code)
+            AS avg_los_by_brand,
+        AVG(CASE WHEN r.booking_status != 'CANCELLED' THEN r.nights END)
             OVER (PARTITION BY r.property_code)
             AS avg_los_by_property,
         SUM(r.total_cost)
