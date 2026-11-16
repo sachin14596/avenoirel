@@ -34,7 +34,10 @@ sold_stays AS (
         ON
             r.confirmation_number = f.confirmation_number
             AND f.charge_type = 'ROOM'
-    WHERE r.booking_status IN ('CHECKED_IN', 'CHECKED_OUT', 'NO_SHOW')
+    WHERE
+        r.booking_status IN ('CHECKED_IN', 'CHECKED_OUT', 'NO_SHOW')
+        AND COALESCE(r.is_test_record, FALSE) = FALSE
+        AND COALESCE(r.is_duplicate_reservation, FALSE) = FALSE
     GROUP BY
         r.confirmation_number,
         r.property_code,

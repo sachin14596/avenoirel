@@ -35,3 +35,23 @@ unit_tests:
         - {confirmation_number: C1, avg_los_by_property: 3, avg_los_by_brand: 3}
         - {confirmation_number: C2, avg_los_by_property: 3, avg_los_by_brand: 3}
         - {confirmation_number: C3, avg_los_by_property: 3, avg_los_by_brand: 3}
+
+  - name: test_avg_los_ignores_test_records_and_duplicates
+    description: "Test records and duplicate reservations must not enter ALOS. Their rows stay in the model."
+    model: int_stay_duration_metrics
+    given:
+      - input: ref('stg_hotel_properties')
+        rows:
+          - {property_code: P1, brand_code: B1}
+      - input: ref('stg_hotel_reservations')
+        rows:
+          - {confirmation_number: C1, property_code: P1, booking_status: CHECKED_OUT, nights: 2, is_test_record: false, is_duplicate_reservation: false}
+          - {confirmation_number: C2, property_code: P1, booking_status: CHECKED_OUT, nights: 4, is_test_record: false, is_duplicate_reservation: false}
+          - {confirmation_number: C3, property_code: P1, booking_status: CHECKED_OUT, nights: 10, is_test_record: true, is_duplicate_reservation: false}
+          - {confirmation_number: C4, property_code: P1, booking_status: CHECKED_OUT, nights: 20, is_test_record: false, is_duplicate_reservation: true}
+    expect:
+      rows:
+        - {confirmation_number: C1, avg_los_by_property: 3, avg_los_by_brand: 3}
+        - {confirmation_number: C2, avg_los_by_property: 3, avg_los_by_brand: 3}
+        - {confirmation_number: C3, avg_los_by_property: 3, avg_los_by_brand: 3}
+        - {confirmation_number: C4, avg_los_by_property: 3, avg_los_by_brand: 3}

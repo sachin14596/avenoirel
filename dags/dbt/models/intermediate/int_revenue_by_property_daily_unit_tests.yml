@@ -87,3 +87,24 @@ unit_tests:
     expect:
       rows:
         - {property_code: P1, stay_date: '2024-01-02', rooms_available: 0, occupancy_rate: null, revpar_eur: null}
+
+  - name: test_test_records_and_duplicates_are_not_sold
+    description: "Reservations flagged as test records or duplicates must not count as sold rooms and carry no revenue."
+    model: int_revenue_by_property_daily
+    given:
+      - input: ref('stg_ops_room_availability')
+        rows:
+          - {property_code: P1, stay_date: '2024-01-02', total_rooms: 10, ooo_rooms: 0}
+      - input: ref('stg_hotel_reservations')
+        rows:
+          - {confirmation_number: C1, property_code: P1, booking_status: CHECKED_OUT, check_in_date: '2024-01-02', check_out_date: '2024-01-03', is_test_record: false, is_duplicate_reservation: false}
+          - {confirmation_number: C2, property_code: P1, booking_status: CHECKED_OUT, check_in_date: '2024-01-02', check_out_date: '2024-01-03', is_test_record: true, is_duplicate_reservation: false}
+          - {confirmation_number: C3, property_code: P1, booking_status: CHECKED_OUT, check_in_date: '2024-01-02', check_out_date: '2024-01-03', is_test_record: false, is_duplicate_reservation: true}
+      - input: ref('stg_hotel_folios')
+        rows:
+          - {confirmation_number: C1, charge_type: ROOM, amount_eur: 100}
+          - {confirmation_number: C2, charge_type: ROOM, amount_eur: 100}
+          - {confirmation_number: C3, charge_type: ROOM, amount_eur: 100}
+    expect:
+      rows:
+        - {property_code: P1, stay_date: '2024-01-02', rooms_sold: 1, room_revenue_eur: 100}
