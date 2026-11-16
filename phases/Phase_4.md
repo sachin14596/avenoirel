@@ -182,8 +182,8 @@ DAGs connect to `dev` target. In a production Astronomer deployment, this would 
 
 **3. Source freshness _loaded_at field mismatch**
 - `dbt source freshness` failed -- `_loaded_at` column not found in raw tables
-- Raw tables had `loaded_at` without underscore prefix
-- Fix: updated sources.yml `loaded_at_field: loaded_at`
+- The `loaded_at_field` in sources.yml and the load timestamp column in the raw tables did not have the same name
+- Fix: aligned sources.yml and the raw tables on one column name. Verified in Phase 4.5: all 10 raw tables have `_loaded_at` and sources.yml uses `_loaded_at`
 - Learning: sources.yml `loaded_at_field` must match exact column name in raw table
 
 **4. operator_args select syntax error**
@@ -235,9 +235,9 @@ DAGs connect to `dev` target. In a production Astronomer deployment, this would 
 
 **What Challenge:** `dbt source freshness` failed -- column `_loaded_at` not found
 
-**Root Cause:** sources.yml had `loaded_at_field: _loaded_at` (with underscore prefix). Raw tables had `loaded_at` without underscore. Mismatch caused freshness check to fail.
+**Root Cause:** the `loaded_at_field` in sources.yml and the load timestamp column in the raw tables did not have the same name, so the freshness check could not find the column.
 
-**Fix:** Updated sources.yml to `loaded_at_field: loaded_at`
+**Fix:** Aligned sources.yml and the raw tables on one column name. Verified in Phase 4.5: all 10 raw tables have `_loaded_at` and sources.yml uses `_loaded_at`.
 
 **Learning:** `loaded_at_field` in sources.yml must exactly match the column name in the raw table. No assumptions -- always check the raw table schema first.
 
