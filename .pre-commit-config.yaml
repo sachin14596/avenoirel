@@ -3,12 +3,13 @@ repos:
     rev: 3.2.5
     hooks:
       - id: sqlfluff-lint
-        args: [--dialect, snowflake]
+        args: [--dialect, snowflake, --templater, dbt]
         additional_dependencies:
           - sqlfluff-templater-dbt==3.2.5
           - dbt-core==1.8.8
           - dbt-snowflake==1.8.4
       - id: sqlfluff-fix
+        args: [--templater, dbt]
         additional_dependencies:
           - sqlfluff-templater-dbt==3.2.5
           - dbt-core==1.8.8
