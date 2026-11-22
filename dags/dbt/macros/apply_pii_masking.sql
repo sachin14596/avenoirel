@@ -9,7 +9,15 @@
                     SET MASKING POLICY {{ target.database }}.governance.mask_pii_string FORCE
                 {% endset %}
                 {% do run_query(mask_sql) %}
-                {{ log("Masked " ~ col_name ~ " on " ~ this, info=True) }}
+
+                {% set tag_sql %}
+                    ALTER TABLE {{ this }}
+                    MODIFY COLUMN {{ col_name }}
+                    SET TAG {{ target.database }}.governance.data_classification = 'PII'
+                {% endset %}
+                {% do run_query(tag_sql) %}
+
+                {{ log("Masked and tagged " ~ col_name ~ " on " ~ this, info=True) }}
             {% endif %}
         {% endfor %}
     {% endif %}
