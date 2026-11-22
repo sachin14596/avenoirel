@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: avenoirel_raw
-    database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+    database: "{{ target.database }}"
     schema: raw
     loaded_at_field: _loaded_at
     freshness:
