@@ -4,12 +4,14 @@ repos:
     hooks:
       - id: sqlfluff-lint
         args: [--dialect, snowflake, --templater, dbt]
+        exclude: '^scripts/snowflake/'
         additional_dependencies:
           - sqlfluff-templater-dbt==3.2.5
           - dbt-core==1.8.8
           - dbt-snowflake==1.8.4
       - id: sqlfluff-fix
         args: [--templater, dbt]
+        exclude: '^scripts/snowflake/'
         additional_dependencies:
           - sqlfluff-templater-dbt==3.2.5
           - dbt-core==1.8.8
@@ -20,4 +22,4 @@ repos:
     hooks:
       - id: dbt-parse
       - id: check-model-has-description
-        exclude: '^(dags/dbt/(macros|tests|snapshots)/|[.]pre-commit-config[.]yaml$)'
+        exclude: '^(dags/dbt/(macros|tests|snapshots)/|scripts/snowflake/|[.]pre-commit-config[.]yaml$)'
