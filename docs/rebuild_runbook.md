@@ -5,8 +5,9 @@ Every step has a check. If a check fails, stop and find the root cause before go
 
 Status tags: `[VERIFIED]` proven by running it, `[ASSUMED]` taken from documentation, not yet run.
 Sections 2 to 5 were run end to end on the existing account on 2026-11-23 (`[VERIFIED]`, the scripts
-are safe to repeat). Sections 0, 1 and 6 are `[ASSUMED]` until the first real migration has
-followed them.
+are safe to repeat). In section 0 the venv and the imports were verified in a fresh venv the same
+day. The rest of section 0, and sections 1 and 6, are `[ASSUMED]` until the first real migration
+has followed them.
 
 ## Sections
 
