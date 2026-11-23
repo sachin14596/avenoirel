@@ -3,7 +3,7 @@
 -- =====================================================================
 -- How to run: Snowsight worksheet, "Run all".
 -- Safe to run more than once: every statement can be repeated.
--- Prerequisite: the three databases and their schemas already exist.
+-- Prerequisite: script 00 ran (the three databases, their schemas and the warehouse exist).
 --
 -- Access model
 --   dev_role      builds in avenoirel_dev only
@@ -55,8 +55,16 @@ GRANT USAGE ON SCHEMA avenoirel_prod.marts TO ROLE analyst_role;
 GRANT SELECT ON ALL TABLES IN SCHEMA avenoirel_prod.marts TO ROLE analyst_role;
 GRANT SELECT ON FUTURE TABLES IN SCHEMA avenoirel_prod.marts TO ROLE analyst_role;
 
--- 7. Verification (run by hand after the script)
+-- 7. Give the three roles to the user who runs this script (the admin created at signup).
+-- CURRENT_USER() means no user name is hard coded, so the script works in any account.
+SET admin_user = CURRENT_USER();
+GRANT ROLE dev_role TO USER IDENTIFIER($admin_user);
+GRANT ROLE analyst_role TO USER IDENTIFIER($admin_user);
+GRANT ROLE prod_role TO USER IDENTIFIER($admin_user);
+
+-- 8. Verification (run by hand after the script)
 -- SHOW GRANTS TO ROLE analyst_role;
 -- SHOW FUTURE GRANTS IN SCHEMA avenoirel_prod.marts;
 -- SHOW GRANTS TO ROLE prod_role;
 -- SHOW GRANTS TO ROLE dev_role;
+-- SHOW GRANTS TO USER IDENTIFIER($admin_user);
