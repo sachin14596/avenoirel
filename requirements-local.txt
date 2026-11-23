@@ -1,0 +1,20 @@
+# Local venv for AVENOIREL (Python 3.12). CI and Astro use requirements.txt, do not merge the two.
+# Create: python -m venv .venv && source .venv/Scripts/activate && pip install -r requirements-local.txt
+dbt-core==1.8.8
+dbt-snowflake==1.8.4
+snowflake-connector-python==3.18.1
+pyarrow==25.0.1
+pandas==2.2.3
+python-dotenv==1.0.1
+PyYAML==6.0.2
+Faker==33.1.0
+pre-commit==3.8.0
+sqlfluff==3.2.5
+sqlfluff-templater-dbt==3.2.5
+# Installed locally, not needed for a rebuild:
+# black==26.5.1
+# shandy-sqlfmt==0.32.0
+# Phase 6, install when that phase starts:
+# anthropic==0.40.0
+# chromadb==0.5.20
+# sentence-transformers==3.3.1
