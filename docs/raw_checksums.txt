@@ -1,0 +1,10 @@
+57470d942617b9586ff1537ad70aaa64 *data/raw/avenir_members.csv
+dc842153481dfd259cae0aec6b2ba167 *data/raw/avenir_points_transactions.csv
+2e65c32b2cf13c7a37ce0679f6bfb4f6 *data/raw/avenir_tier_history.csv
+1cfb436a3aa49c2adbe6bf483b1ab452 *data/raw/cancellations.csv
+71b9cad901d409281e912b4b97f9def7 *data/raw/folios.csv
+05b1a49b515beda66af41953b7d29270 *data/raw/guests.csv
+773538a33a6b853dc325f79facac7ea1 *data/raw/properties.csv
+8d41b116cd2b66a9567302d70a42ad06 *data/raw/reservations.csv
+8df0d0c4fc2535517369d6b358f2a7e7 *data/raw/room_availability.csv
+6412232056fbad4085547f4b08957105 *data/raw/room_types.csv

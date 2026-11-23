@@ -157,3 +157,85 @@ models:
       - name: loaded_at
         data_type: timestamp_ltz
         description: "Timestamp when the record was loaded into the mart."
+
+  - name: dim_guest
+    description: "Guest dimension, one row per guest profile, built from stg_guests. Five columns carry personal info (PII) and are marked with meta pii true."
+    config:
+      contract:
+        enforced: true
+    meta:
+      owner: sachin
+      domain: operations
+    columns:
+      - name: guest_key
+        data_type: varchar
+        description: "Surrogate key: hash of guest_profile_id."
+        constraints:
+          - type: not_null
+        data_tests:
+          - unique
+          - not_null
+      - name: guest_profile_id
+        data_type: varchar
+        description: "Natural key. Opera-style guest profile identifier."
+        constraints:
+          - type: not_null
+        data_tests:
+          - unique
+          - not_null
+      - name: guest_title
+        data_type: varchar
+        description: "Salutation (Mr, Mrs, Ms, Dr, Prof). Nullable. Not masked: low sensitivity."
+      - name: guest_first_name
+        data_type: varchar
+        description: "Guest first name. PII."
+        meta:
+          pii: true
+        data_tests:
+          - not_null
+      - name: guest_last_name
+        data_type: varchar
+        description: "Guest last name. PII."
+        meta:
+          pii: true
+        data_tests:
+          - not_null
+      - name: guest_email
+        data_type: varchar
+        description: "Guest email. PII. Nullable."
+        meta:
+          pii: true
+      - name: guest_phone
+        data_type: varchar
+        description: "Guest phone number. PII. Nullable."
+        meta:
+          pii: true
+      - name: guest_address
+        data_type: varchar
+        description: "Guest address. PII. Nullable."
+        meta:
+          pii: true
+      - name: nationality_code
+        data_type: varchar
+        description: "ISO 3-letter nationality code. Nullable. Not masked: needed for nationality analysis."
+      - name: is_avenir_member
+        data_type: boolean
+        description: "True when the guest is enrolled in AVENIR Rewards."
+      - name: has_invalid_name
+        data_type: boolean
+        description: "Data quality flag: fake or joke name."
+      - name: has_garbled_name
+        data_type: boolean
+        description: "Data quality flag: transliteration artifact in the name."
+      - name: has_invalid_email
+        data_type: boolean
+        description: "Data quality flag: dummy email address."
+      - name: has_missing_phone
+        data_type: boolean
+        description: "Data quality flag: phone number missing."
+      - name: has_missing_address
+        data_type: boolean
+        description: "Data quality flag: address missing."
+      - name: created_date
+        data_type: date
+        description: "Date the guest profile was created in the source system."

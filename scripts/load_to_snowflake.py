@@ -51,8 +51,8 @@ def load_table(conn, table_name: str):
     csv_path = RAW_DIR / f"{table_name}.csv"
 
     if not csv_path.exists():
-        print(f"  SKIP: {csv_path} not found")
-        return
+        print(f"  ERROR: {csv_path} not found")
+        return False
 
     print(f"  Loading {table_name}...", end=" ")
     df = pd.read_csv(csv_path)
@@ -74,6 +74,7 @@ def load_table(conn, table_name: str):
         print(f"✅ {nrows:,} rows loaded")
     else:
         print(f"❌ Failed")
+    return bool(success)
 
 def main():
     print("\nAVENOIREL — Snowflake Raw Data Loader")
@@ -81,14 +82,21 @@ def main():
     print(f"Target: {os.environ['SNOWFLAKE_DATABASE']}.{os.environ['SNOWFLAKE_SCHEMA']}")
     print("=" * 45 + "\n")
 
+    missing = [t for t in TABLES if not (RAW_DIR / f"{t}.csv").exists()]
+    if missing:
+        print(f"❌ Missing CSV files in {RAW_DIR}: {', '.join(missing)}")
+        raise SystemExit(1)
+
     conn = get_connection()
     print("✅ Snowflake connection established\n")
 
-    for table in TABLES:
-        load_table(conn, table)
+    failed = [t for t in TABLES if not load_table(conn, t)]
 
     conn.close()
-    print("\n✅ All tables loaded successfully")
+    if failed:
+        print(f"\n❌ {len(failed)} of {len(TABLES)} tables failed: {', '.join(failed)}")
+        raise SystemExit(1)
+    print(f"\n✅ All {len(TABLES)} tables loaded successfully")
     print("Raw data ready for dbt transformations.\n")
 
 if __name__ == "__main__":

@@ -33,6 +33,7 @@ models:
       +tags: ["intermediate"]
     marts:
       +schema: marts
+      +post-hook: "{{ apply_pii_masking() }}"
       +materialized: table
       revenue:
         +materialized: table
